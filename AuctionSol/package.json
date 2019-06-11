@@ -1,0 +1,22 @@
+{
+  "name": "auctionsol",
+  "version": "1.0.0",
+  "description": "auction software using ethereum to log transactions",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "dev"
+  },
+  "keywords": [
+    "truffle",
+    "ethereum"
+  ],
+  "author": "vinc",
+  "license": "ISC",
+  "dependencies": {
+    "truffle": "^5.0.21"
+  },
+  "devDependencies": {}
+}
