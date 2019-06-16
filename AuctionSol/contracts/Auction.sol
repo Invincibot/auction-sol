@@ -1,6 +1,9 @@
 pragma solidity ^0.5.0;
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract Auction {
+  using SafeMath for uint;
+
   struct Item {
     uint reservePrice;
     uint bids;
@@ -23,6 +26,12 @@ contract Auction {
     address indexed bidder
   );
 
+  event Claim (
+    uint itemNo,
+    address indexed bidder,
+    uint fee
+  );
+
   Item[] public items;
 
   mapping (uint => uint) public itemIndex;
@@ -35,7 +44,7 @@ contract Auction {
   }
 
   function initItem (uint _itemNo, uint _reservePrice) public returns (bool) {
-    require(msg.sender == admin, "Only the admin may initialize items.");
+    require(msg.sender == admin, "Unauthorized account");
     require(!initialized[_itemNo], "Item under item number already exists.");
     Item memory _item = Item(_reservePrice, 0, 0, address(0), true, false);
     itemIndex[_itemNo] = items.push(_item) - 1;
@@ -67,7 +76,7 @@ contract Auction {
   }
 
   function endAuction(uint _itemNo) public returns (bool) {
-    require(msg.sender == admin);
+    require(msg.sender == admin, "Unauthorized account.");
     uint _itemID = itemIndex[_itemNo];
     require(initialized[_itemNo], "Invalid item number.");
     Item memory _item = items[_itemID];
@@ -77,15 +86,15 @@ contract Auction {
     return true;
   }
 
-  function claimItem(uint _itemNo) public payable returns bool {
-    require(initialized[_itemNo], "Invalid item number");
+  function claimItem(uint _itemNo) public payable returns (bool) {
+    require(initialized[_itemNo], "Invalid item number.");
     uint _itemID = itemIndex[_itemNo];
     Item memory _item = items[_itemID];
-    require(msg.sender == _item.bidder);
-    require(msg.value == _item.)
-  }
-
-  function multiply (uint x, uint y) internal pure returns (uint) {
-    require(y == 0 || (z = x * y) / y == x);
+    require(msg.sender == _item.bidder, "Invalid account.");
+    require(msg.value == SafeMath.div(_item.highBid, 5), "Invalid fee.");
+    require(!_item.claimed, "Item already claimed.");
+    items[_itemID].claimed = true;
+    emit Claim(_itemNo, msg.sender, msg.value);
+    return true;
   }
 }

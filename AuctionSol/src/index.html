@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Test Auction</title>
+  </head>
+  <body style = "padding: 10px">
+    <div id = "loader">
+      <p>Loading...</p>
+    </div>
+    <div id = "content">
+      <h1>Test Auction</h1>
+      <p>Welcome to this auction website! Items are held for a certain amount of time, and bids can be placed for that period. Bids are in ETH and and bids must be higher than the previous highest bid. Happy bidding!</p>
+      <p>Your account is: <span id = "account-address"></span>.</p>
+      <p>You have <span id = "account-balance"></span> ETH.</p>
+      <table style = "width: 100%" id = "items">
+      </table>
+    </div>
+  </body>
+  <script type="text/javascript" src = "js/jquery.min.js"></script>
+  <script type="text/javascript" src = "js/truffle-contract.min.js"></script>
+  <script type="text/javascript" src = "js/web3.min.js"></script>
+  <script type="text/javascript" src = "js/main.js"></script>
+</html>

@@ -106,7 +106,36 @@ contract ('Auction', function(accounts) {
       assert(error.message.indexOf('revert') >= 0, 'prevents ending auction that has already been ended');
       return auctionInstance.bid(itemNo, {from: bidder, value: bidAmount + 1});
     }).then(assert.fail).catch(function(error) {
-      assert(error.message.indexOf('revert') >= 0, 'prevents bidding on sold items';
+      assert(error.message.indexOf('revert') >= 0, 'prevents bidding on sold items');
+    });
+  });
+
+  it ('allows users to claim items', function() {
+    var auctionInstance;
+    return Auction.deployed().then(function(instance) {
+      auctionInstance = instance;
+      return auctionInstance.claimItem(0);
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert') >= 0, 'prevents claiming uninitialized item');
+      return auctionInstance.claimItem(itemNo, {from: admin});
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert') >= 0, 'prevents unauthorized account claiming item');
+      return auctionInstance.claimItem(itemNo, {from: bidder, value: 0});
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert') >= 0, 'prevents claiming item with wrong fee');
+      return auctionInstance.claimItem.call(itemNo, {from: bidder, value: bidAmount / 5});
+    }).then(function(success) {
+      assert.equal(success, true, 'successfully claims item');
+      return auctionInstance.claimItem(itemNo, {from: bidder, value: bidAmount / 5});
+    }).then(function(receipt) {
+      assert.equal(receipt.logs.length, 1, 'emits 1 event');
+      assert.equal(receipt.logs[0].event, 'Claim', 'emits the "Claim event"');
+      assert.equal(receipt.logs[0].args.itemNo, itemNo, 'logs correct item number');
+      assert.equal(receipt.logs[0].args.bidder, bidder, 'logs correct bidder');
+      assert.equal(receipt.logs[0].args.fee, bidAmount / 5, 'logs correct fee');
+      return auctionInstance.claimItem(itemNo, {from: bidder, value: bidAmount / 5});
+    }).then(assert.fail).catch(function(error) {
+      assert(error.message.indexOf('revert') >= 0, 'prevents claiming item that has been previously claimed.');
     });
   });
 });
