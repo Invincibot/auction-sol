@@ -59,17 +59,17 @@ contract Auction {
     return true;
   }
 
-  function getItemData (uint _itemNo) public view returns (uint, uint, uint, address, bool, bool) {
+  function getItemData (uint _itemNo) public view returns (uint, uint, address, bool, bool) {
     require(initialized[_itemNo], "Item not initialized");
     Item memory _item = items[_itemNo];
-    return (_item.reservePrice, _item.bids, _item.highBid, _item.bidder, _item.biddable, _item.claimable);
+    return (_item.bids, _item.highBid, _item.bidder, _item.biddable, _item.claimable);
   }
 
-  function getItemIDData (uint _itemID) public view returns (uint, uint, uint, uint, address, bool) {
+  function getItemIDData (uint _itemID) public view returns (uint, uint, uint, address, bool, bool) {
     require(_itemID < itemIndex.length, "Item not found");
     uint _itemNo = itemIndex[_itemID];
     Item memory _item = items[_itemNo];
-    return (_itemNo, _item.reservePrice, _item.bids, _item.highBid, _item.bidder, _item.biddable);
+    return (_itemNo, _item.bids, _item.highBid, _item.bidder, _item.biddable, _item.claimable);
   }
 
   function getItemCount () public view returns (int) {
@@ -94,11 +94,11 @@ contract Auction {
   function endAuction(uint _itemNo) public returns (bool) {
     require(msg.sender == admin, "Unauthorized account.");
     require(initialized[_itemNo], "Invalid item number.");
-    Item memory _item = items[_itemNo];
+    Item memory _item = Auction.items[_itemNo];
     require(_item.biddable, "Item already auctioned.");
-    items[_itemNo].biddable = false;
+    Auction.items[_itemNo].biddable = false;
     if (_item.highBid >= _item.reservePrice) {
-      items[_itemNo].claimable = true;
+      Auction.items[_itemNo].claimable = true;
       emit Sell(_itemNo, _item.bids, _item.highBid, _item.bidder, true);
     }
     else {
@@ -114,7 +114,6 @@ contract Auction {
     Item memory _item = items[_itemNo];
     require(_item.claimable, "Item not claimable.");
     require(msg.sender == _item.bidder, "Invalid account.");
-    require(msg.value == SafeMath.div(_item.highBid, 5), "Invalid fee.");
     emit Claim(_itemNo, msg.sender, msg.value);
     deleteItem(_itemNo);
     return true;
