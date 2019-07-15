@@ -8,16 +8,45 @@
     <div id = "loader">
       <p>Loading...</p>
     </div>
-    <div id = "content">
+    <div id = "content" style="display:none">
       <h1>Test Auction</h1>
       <p>Welcome to this auction website! Items are held for a certain amount of time, and bids can be placed for that period. Bids are in ETH and and bids must be higher than the previous highest bid. Happy bidding!</p>
       <p>Your account is: <span id = "account-address"></span>.</p>
       <p>You have <span id = "account-balance"></span> ETH.</p>
-      <table style = "width: 100%" id = "items">
+      <h3>Biddable Items</h3>
+      <table style = "width: 100%" id = "biddable-items">
       </table>
+      <div id = "bid-item">
+        <h3>Bid on Item</h3>
+        <input type = "number" id = "item-number" placeholder = "item number" min = "0">
+        <input type = "number" id = "bid-amount" placeholder = "bid amount" min = "0">
+        <button type = "button" id = "enter-data">Bid</button>
+      </div>
+      <h3>Claimable Items</h3>
+      <table style = "width: 100%" id = "auctioned-items">
+      </table>
+      <div id = "claim-item">
+        <h3>Claim Item</h3>
+        <input type = "number" id = "item-number" placeholder = "item number" min = "0">
+        <button type = "button" id = "enter-data">Claim Item</button>
+      </div>
+    </div>
+    <div id = "admin" style="display:none">
+      <h2>Admin Panel</h2>
+      <div id = "add-item">
+        <h3>Add Item</h3>
+        <input type = "number" id = "item-number" placeholder = "item number" min = "0">
+        <input type = "number" id = "reserve-price" placeholder = "reserve price" min = "0">
+        <button type = "button" id = "enter-data">Initialize Item</button>
+      </div>
+      <div id = "end-auction">
+        <h3>End Auction</h3>
+        <input type = "number" id = "item-number" placeholder = "item number" min = "0">
+        <button type = "button" id = "enter-data">End Auction</button>
+      </div>
     </div>
   </body>
-  <script type="text/javascript" src = "js/jquery.min.js"></script>
+  <script type="text/javascript" src = "js/jquery-3.4.1.min.js"></script>
   <script type="text/javascript" src = "js/truffle-contract.min.js"></script>
   <script type="text/javascript" src = "js/web3.min.js"></script>
   <script type="text/javascript" src = "js/main.js"></script>

@@ -30,10 +30,9 @@ contract ('Auction', function(accounts) {
       assert.equal(success, true, 'successfully added item');
       return auctionInstance.initItem(itemNo, reservePrice, {from: admin});
     }).then(function() {
-      return auctionInstance.itemIndex(itemNo);
-    }).then(function(_itemID) {
-      itemID = _itemID;
-      assert.equal(itemID, 0, 'returns correct item ID');
+      return auctionInstance.itemIndex(0);
+    }).then(function(_itemNo) {
+      assert.equal(_itemNo, itemNo, 'returns correct item number');
       return auctionInstance.initialized(itemNo);
     }).then(function(initialized) {
       assert.equal(initialized, true, 'successfully initialized item');
@@ -43,9 +42,12 @@ contract ('Auction', function(accounts) {
       assert.equal(data[1], 0, 'has no bids');
       assert.equal(data[2], 0, 'has no highest bid');
       assert.equal(data[3], 0x0000000000000000000000000000000000000000, 'has no highest bidder');
+      return auctionInstance.getItemIDData(0);
+    }).then(function(data) {
+      assert.equal(data[0], itemNo, 'returns correct item');
       return auctionInstance.initItem(itemNo, reservePrice, {from: admin});
     }).then(assert.fail).catch(function(error) {
-      assert(error.message.indexOf('revert') >= 0, 'prevents initalization of item number with existing item' + error);
+      assert(error.message.indexOf('revert') >= 0, 'prevents initalization of item number with existing item');
     });
   });
 
@@ -98,15 +100,17 @@ contract ('Auction', function(accounts) {
       assert.equal(receipt.logs[0].args.bids, 1, 'logs correct amount of bids');
       assert.equal(receipt.logs[0].args.highBid, bidAmount, 'logs correct final bid');
       assert.equal(receipt.logs[0].args.bidder, bidder, 'logs correct final bidder');
+      assert.equal(receipt.logs[0].args.claimable, true, 'allows item to be claimed');
       return auctionInstance.getItemData(itemNo);
     }).then(function(data) {
       assert.equal(data[4], false, 'turns off biddable aspect of item');
+      assert.equal(data[5], true, 'allows item to be claimed');
       return auctionInstance.endAuction(0, {from: admin});
     }).then(assert.fail).catch(function(error) {
-      assert(error.message.indexOf('revert') >= 0, 'prevents ending auction that has already been ended');
+      assert(error.message.indexOf('revert') >= 0, 'prevents ending auction that has already been ended' + error);
       return auctionInstance.bid(itemNo, {from: bidder, value: bidAmount + 1});
     }).then(assert.fail).catch(function(error) {
-      assert(error.message.indexOf('revert') >= 0, 'prevents bidding on sold items');
+      assert(error.message.indexOf('revert') >= 0, 'prevents bidding on sold items' + error);
     });
   });
 

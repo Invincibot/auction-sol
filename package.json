@@ -16,10 +16,12 @@
   "author": "vinc",
   "license": "ISC",
   "dependencies": {
+    "bn.js": "^5.0.0",
+    "git-checkout": "^1.0.1",
     "install": "^0.12.2",
     "lite-server": "^2.4.0",
     "openzeppelin-solidity": "^2.3.0",
     "truffle": "^5.0.12",
-    "web3": "github:ethereum/web3.js#develop"
+    "web3": "^1.0.0-beta.55"
   }
 }
