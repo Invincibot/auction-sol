@@ -136,12 +136,12 @@ contract Auction {
     require(isOpen(_itemNo), "Auction has closed already.");
     Item memory _item = items[_itemNo];
     require(_item.bids == 0, "Item already has bids.");
-    require(msg.value == _item.buyout.mul(5).div(6), "Invalid amount.");
+    require(msg.value == _item.buyout.mul(6).div(5), "Invalid amount.");
 
     _item.seller.transfer(msg.value.div(6).mul(5));
     admin.transfer(msg.value.div(6));
     deleteItem(_itemNo);
-    emit Sell(_itemNo, _item.bidder, true, msg.value.div(6));
+    emit Sell(_itemNo, msg.sender, true, msg.value.div(6));
     return true;
   }
 
@@ -184,7 +184,6 @@ contract Auction {
 
   function deleteItem (uint _itemNo) private returns (bool) {
     require(initialized[_itemNo], "Invalid item number.");
-    require(!isOpen(_itemNo), "Item still on auction.");
 
     initialized[_itemNo] = false;
     for (uint i = 0; i < itemIndex.length; i++) {
