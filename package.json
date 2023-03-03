@@ -19,9 +19,9 @@
     "bn.js": "^5.0.0",
     "git-checkout": "^1.0.1",
     "install": "^0.12.2",
-    "lite-server": "^2.4.0",
+    "lite-server": "^2.6.1",
     "openzeppelin-solidity": "^2.3.0",
-    "truffle": "^5.0.12",
+    "truffle": "^5.7.9",
     "web3": "^1.0.0-beta.55"
   }
 }
